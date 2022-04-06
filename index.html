@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Weather</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<main class="main">
+    <div class="container">
+
+        <!-- Form -->
+        <form class="search-form">
+            <input class="search__input"
+                   type="text" placeholder="Type the city">
+            <button class="search__btn" type="submit"></button>
+        </form>
+
+        <!-- Main display -->
+        <div class="main-box">
+            <div class="main-box__left">
+                <div class="main-tabs__body">
+                    <div class="weather-now main-tabs__block main-tabs__block--active" id="tab_1">
+                        <p class="weather-now__temperature">
+                            14°
+                        </p>
+                        <img class="weather-now__img" src="https://openweathermap.org/img/wn/02d@4x.png"
+                             alt="cloud img">
+                        <div class="weather-now__like">
+                            <h3 class="title-city-now">Rio</h3>
+                            <button class="weather-now__btn"></button>
+                        </div>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="weather-details main-tabs__block" id="tab_2">
+                        <h3 class="weather-title weather-details__title">
+                            Rio
+                        </h3>
+                        <ul class="weather-detail__list">
+                            <li class="weather-detail__list-item">
+                                Temperature:
+                                <span class="temperature">14°</span>
+                            </li>
+                            <li class="weather-detail__list-item">
+                                Feels like:
+                                <span class="feels_like">10°</span>
+                            </li>
+                            <li class="weather-detail__list-item">
+                                Weather:
+                                <span class="weather">cloud</span>
+                            </li>
+                            <li class="weather-detail__list-item">
+                                Sunrise:
+                                <span class="sunrise">03:21</span>
+                            </li>
+                            <li class="weather-detail__list-item">
+                                Sunset:
+                                <span class="sunset">18:51</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Forecast -->
+                    <div class="weather-forecast main-tabs__block" id="tab_3">
+                        <h3 class="weather-title weather-forecast__title">
+                            Rio
+                        </h3>
+                        <ul class="weather-forecast__list">
+                            <li class="weather-forecast__list-item">
+                                <div class="weather-forecast__top">
+                                    <p class="weather-forecast__text">12 Mar</p>
+                                    <p class="weather-forecast__text">20:00</p>
+                                </div>
+                                <div class="weather-forecast__bottom">
+                                    <div class="weather-forecast__parameters">
+                                        <p class="weather-forecast__text"> Temperature: 7°</p>
+                                        <p class="weather-forecast__text"> Feels like: 3°</p>
+                                    </div>
+                                    <div class="weather-forecast__precipitation">
+                                        <p class="weather-forecast__text"> Clouds</p>
+                                        <img src="https://openweathermap.org/img/wn/02n.png" alt="weather icon"
+                                             class="weather-forecast__img">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="weather-forecast__list-item">
+                                <div class="weather-forecast__top">
+                                    <p class="weather-forecast__text">12 Mar</p>
+                                    <p class="weather-forecast__text">23:00</p>
+                                </div>
+                                <div class="weather-forecast__bottom">
+                                    <div class="weather-forecast__parameters">
+                                        <p class="weather-forecast__text"> Temperature: 7°</p>
+                                        <p class="weather-forecast__text"> Feels like: 3°</p>
+                                    </div>
+                                    <div class="weather-forecast__precipitation">
+                                        <p class="weather-forecast__text"> Clouds</p>
+                                        <img src="https://openweathermap.org/img/wn/02n.png" alt="weather icon"
+                                             class="weather-forecast__img">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="weather-forecast__list-item">
+                                <div class="weather-forecast__top">
+                                    <p class="weather-forecast__text">13 Mar</p>
+                                    <p class="weather-forecast__text">03:00</p>
+                                </div>
+                                <div class="weather-forecast__bottom">
+                                    <div class="weather-forecast__parameters">
+                                        <p class="weather-forecast__text"> Temperature: 7°</p>
+                                        <p class="weather-forecast__text"> Feels like: 3°</p>
+                                    </div>
+                                    <div class="weather-forecast__precipitation">
+                                        <p class="weather-forecast__text"> Clouds</p>
+                                        <img src="https://openweathermap.org/img/wn/02n.png" alt="weather icon"
+                                             class="weather-forecast__img">
+                                    </div>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- TABS -->
+                <nav class="main-tabs">
+                    <a class="main-tabs__item main-tabs__item--active" href="#tab_1">
+                        Now
+                    </a>
+                    <a class="main-tabs__item" href="#tab_2">
+                        Details
+                    </a>
+                    <a class="main-tabs__item" href="#tab_3">
+                        Forecast
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Added Locations -->
+            <div class="main-box__right">
+                <h2 class="main-box__right-title" id="test">
+                    Added Locations:
+                </h2>
+                <ul class="city-list">
+                    <li class="city-list__item">
+                        <div class="city">Kyiv</div>
+                        <button class="city-list__close-btn"></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
+
+<template id="city-item">
+    <li class="city-list__item">
+        <div class="city">Kyiv</div>
+        <button class="city-list__close-btn"></button>
+    </li>
+</template>
+
+<script type="module" src="js/main.js"></script>
+</body>
+
+</html>
