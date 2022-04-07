@@ -1,3 +1,11 @@
+export const UI_ELEMENTS = {
+    INPUT: document.querySelector('.search__input'),
+    BUTTON: document.querySelector('.search__btn'),
+    WEATHER_NOW: document.querySelector('.weather-now__temperature'),
+    WEATHER_CITY_NOW: document.querySelector('.title-city-now'),
+}
+
+
 const tabs = document.querySelectorAll('.main-tabs__item')
 for (let tab of tabs) {
     tab.addEventListener('click', switchTab)
