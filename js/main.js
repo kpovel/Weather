@@ -1,29 +1,38 @@
-// import './view.js'
 import {UI_ELEMENTS} from "./view.js";
 
 const SERVER_URL = 'http://api.openweathermap.org/data/2.5/weather';
-const apiKey = 'f660a2fb1e4bad108d6160b7f58c555f';
+const API_KEY = 'f660a2fb1e4bad108d6160b7f58c555f';
 
 
 UI_ELEMENTS.INPUT.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
-        sendRequest()
+        getWeather()
     }
 })
-UI_ELEMENTS.BUTTON.addEventListener('click', sendRequest)
+UI_ELEMENTS.BUTTON.addEventListener('click', getWeather)
 
 
-function sendRequest() {
+function getWeather() {
     const cityName = UI_ELEMENTS.INPUT.value;
-    const url = `${SERVER_URL}?q=${cityName}&appid=${apiKey}`;
+    const url = `${SERVER_URL}?q=${cityName}&appid=${API_KEY}`;
 
     fetch(url)
-        .then(response => response.json())
-        .then(json => {
-            console.log(json)
-            const tempCelsius = Math.round(json.main.temp - 273.15)
-            UI_ELEMENTS.WEATHER_NOW.textContent = `${tempCelsius}°`
-            UI_ELEMENTS.WEATHER_CITY_NOW.textContent = `${json.name}`
+        .catch(() => {
+            throw new URIError('error url')
         })
-    UI_ELEMENTS.INPUT.value = null
+        .then(response => response.json())
+        .then(item => {
+            const tempCelsius = Math.round(item.main.temp - 273.15)
+            UI_ELEMENTS.WEATHER_NOW.textContent = `${tempCelsius}°`
+            UI_ELEMENTS.WEATHER_CITY_NOW.textContent = `${item.name}`
+        })
+
+        .catch((err) => {
+            if (err.name === 'URIError') {
+                alert(err)
+            }else if (err.name === 'TypeError'){
+                alert(`${err.name}: undefined city`)
+            }
+        })
+        .finally(() => UI_ELEMENTS.INPUT.value = null)
 }
