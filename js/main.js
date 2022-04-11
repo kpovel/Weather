@@ -1,7 +1,7 @@
 import {UI_ELEMENTS} from "./view.js";
 
-const SERVER_URL = 'http://api.openweathermap.org/data/2.5/weather';
-const API_KEY = 'f660a2fb1e4bad108d6160b7f58c555f';
+const SERVER_URL = 'https://api.openweathermap.org/data/2.5/weather';
+const API_KEY = '4783b73cfe02019303d03a9d793cc64b';
 
 
 UI_ELEMENTS.INPUT.addEventListener('keydown', function (e) {
