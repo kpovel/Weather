@@ -1,5 +1,6 @@
 import {TEMPLATE_ELEMENT, UI_ELEMENTS} from "./view.js";
 
+const savedCity = []
 const SERVER_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const API_KEY = '4783b73cfe02019303d03a9d793cc64b';
 
@@ -10,7 +11,6 @@ UI_ELEMENTS.INPUT.addEventListener('keydown', function (e) {
     }
 })
 UI_ELEMENTS.BUTTON.addEventListener('click', getWeather)
-
 
 function getWeather(switchOfCity) {
     const cityName = switchOfCity ? switchOfCity : UI_ELEMENTS.INPUT.value.trim();
@@ -29,7 +29,14 @@ function getWeather(switchOfCity) {
             const icon = item.weather[0].icon
             UI_ELEMENTS.WEATHER_NOW_IMG.src = `https://openweathermap.org/img/wn/${icon}@4x.png`
         })
-
+        .then(() => {
+            const cityInSaved = savedCity.findIndex(item => item === UI_ELEMENTS.WEATHER_CITY_NOW.textContent)
+            if (~cityInSaved) {
+                UI_ELEMENTS.WEATHER_NOW_BUTTON.style.background = 'url("./img/heart_red.svg")'
+            } else {
+                UI_ELEMENTS.WEATHER_NOW_BUTTON.style.background = 'url("./img/heart.svg")'
+            }
+        })
         .catch((err) => {
             if (err.name === 'URIError') {
                 alert(err)
@@ -40,8 +47,6 @@ function getWeather(switchOfCity) {
         .finally(() => UI_ELEMENTS.INPUT.value = null)
 }
 
-
-const savedCity = []
 
 UI_ELEMENTS.WEATHER_NOW_BUTTON.addEventListener('click', saveCity)
 
@@ -58,8 +63,7 @@ function saveCity() {
         UI_ELEMENTS.WEATHER_NOW_BUTTON.style.background = 'url("./img/heart.svg")'
     } else {
         savedCity.push(cityNow)
-
-
+        
         templateCity.firstElementChild.firstElementChild.textContent = cityNow
         UI_ELEMENTS.CITY_LIST.append(templateCity)
 
@@ -71,7 +75,6 @@ function saveCity() {
     const cityList = document.querySelectorAll('.city-list__close-btn')
     for (let city of cityList) {
         city.addEventListener('click', deleteCityByButtonClose)
-
     }
     console.log(savedCity)
 }
@@ -82,6 +85,7 @@ function deleteCityByButtonClose() {
 
     savedCity.splice(indexCity, 1)
     this.parentElement.remove()
+    UI_ELEMENTS.WEATHER_NOW_BUTTON.style.background = 'url("./img/heart.svg")'
 }
 
 function chooseSavedCity() {
@@ -91,7 +95,6 @@ function chooseSavedCity() {
         cityListElement.addEventListener('click', function () {
             const searchCity = this.textContent
             getWeather(searchCity)
-            //    todo: change on click heart
         })
     }
 }
