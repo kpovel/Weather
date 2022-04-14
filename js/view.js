@@ -3,6 +3,13 @@ export const UI_ELEMENTS = {
     BUTTON: document.querySelector('.search__btn'),
     WEATHER_NOW: document.querySelector('.weather-now__temperature'),
     WEATHER_CITY_NOW: document.querySelector('.title-city-now'),
+    WEATHER_NOW_BUTTON: document.querySelector('.weather-now__btn'),
+    CITY_LIST: document.querySelector('.city-list'),
+    CITY_LIST_ITEM: document.querySelectorAll('.city-list__item'),
+    CITY_LIST_CLOSE: document.querySelectorAll('.city-list__close-btn'),
+}
+export const TEMPLATE_ELEMENT = {
+    CITY_ITEM: document.getElementById('city-item')
 }
 
 

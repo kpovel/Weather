@@ -1,4 +1,4 @@
-import {UI_ELEMENTS} from "./view.js";
+import {TEMPLATE_ELEMENT, UI_ELEMENTS} from "./view.js";
 
 const SERVER_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const API_KEY = '4783b73cfe02019303d03a9d793cc64b';
@@ -12,8 +12,8 @@ UI_ELEMENTS.INPUT.addEventListener('keydown', function (e) {
 UI_ELEMENTS.BUTTON.addEventListener('click', getWeather)
 
 
-function getWeather() {
-    const cityName = UI_ELEMENTS.INPUT.value;
+function getWeather(switchOfCity) {
+    const cityName = switchOfCity ? switchOfCity : UI_ELEMENTS.INPUT.value.trim();
     const url = `${SERVER_URL}?q=${cityName}&appid=${API_KEY}`;
 
     fetch(url)
@@ -22,6 +22,7 @@ function getWeather() {
         })
         .then(response => response.json())
         .then(item => {
+            // console.log(item)
             const tempCelsius = Math.round(item.main.temp - 273.15)
             UI_ELEMENTS.WEATHER_NOW.textContent = `${tempCelsius}°`
             UI_ELEMENTS.WEATHER_CITY_NOW.textContent = `${item.name}`
@@ -30,9 +31,65 @@ function getWeather() {
         .catch((err) => {
             if (err.name === 'URIError') {
                 alert(err)
-            }else if (err.name === 'TypeError'){
+            } else if (err.name === 'TypeError') {
                 alert(`${err.name}: undefined city`)
             }
         })
         .finally(() => UI_ELEMENTS.INPUT.value = null)
+}
+
+
+const savedCity = []
+
+UI_ELEMENTS.WEATHER_NOW_BUTTON.addEventListener('click', saveCity)
+
+function saveCity() {
+    const cityNow = UI_ELEMENTS.WEATHER_CITY_NOW.textContent
+    const templateCity = TEMPLATE_ELEMENT.CITY_ITEM.content.cloneNode(true)
+    const includeCity = savedCity.findIndex(item => item === cityNow)
+
+    if (~includeCity) {
+        savedCity.splice(includeCity, 1)
+        const cityList = document.querySelectorAll('.city-list__item')
+        cityList[includeCity].remove()
+
+        UI_ELEMENTS.WEATHER_NOW_BUTTON.style.background = 'url("./img/heart.svg")'
+    } else {
+        savedCity.push(cityNow)
+
+
+        templateCity.firstElementChild.firstElementChild.textContent = cityNow
+        UI_ELEMENTS.CITY_LIST.append(templateCity)
+
+        UI_ELEMENTS.WEATHER_NOW_BUTTON.style.background = 'url("./img/heart_red.svg")'
+    }
+
+    chooseSavedCity()
+
+    const cityList = document.querySelectorAll('.city-list__close-btn')
+    for (let city of cityList) {
+        city.addEventListener('click', deleteCityByButtonClose)
+
+    }
+    console.log(savedCity)
+}
+
+function deleteCityByButtonClose() {
+    const thisCity = this.previousElementSibling.textContent
+    const indexCity = savedCity.findIndex(item => item === thisCity)
+
+    savedCity.splice(indexCity, 1)
+    this.parentElement.remove()
+}
+
+function chooseSavedCity() {
+    const cityList = document.querySelectorAll('.city')
+
+    for (let cityListElement of cityList) {
+        cityListElement.addEventListener('click', function () {
+            const searchCity = this.textContent
+            getWeather(searchCity)
+            //    todo: change on click heart
+        })
+    }
 }
