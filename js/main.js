@@ -22,10 +22,12 @@ function getWeather(switchOfCity) {
         })
         .then(response => response.json())
         .then(item => {
-            // console.log(item)
             const tempCelsius = Math.round(item.main.temp - 273.15)
             UI_ELEMENTS.WEATHER_NOW.textContent = `${tempCelsius}°`
             UI_ELEMENTS.WEATHER_CITY_NOW.textContent = `${item.name}`
+
+            const icon = item.weather[0].icon
+            UI_ELEMENTS.WEATHER_NOW_IMG.src = `https://openweathermap.org/img/wn/${icon}@4x.png`
         })
 
         .catch((err) => {

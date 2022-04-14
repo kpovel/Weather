@@ -4,6 +4,7 @@ export const UI_ELEMENTS = {
     WEATHER_NOW: document.querySelector('.weather-now__temperature'),
     WEATHER_CITY_NOW: document.querySelector('.title-city-now'),
     WEATHER_NOW_BUTTON: document.querySelector('.weather-now__btn'),
+    WEATHER_NOW_IMG: document.querySelector('.weather-now__img'),
     CITY_LIST: document.querySelector('.city-list'),
     CITY_LIST_ITEM: document.querySelectorAll('.city-list__item'),
     CITY_LIST_CLOSE: document.querySelectorAll('.city-list__close-btn'),
