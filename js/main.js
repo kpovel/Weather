@@ -63,7 +63,7 @@ function saveCity() {
         UI_ELEMENTS.WEATHER_NOW_BUTTON.style.background = 'url("./img/heart.svg")'
     } else {
         savedCity.push(cityNow)
-        
+
         templateCity.firstElementChild.firstElementChild.textContent = cityNow
         UI_ELEMENTS.CITY_LIST.append(templateCity)
 
@@ -85,7 +85,9 @@ function deleteCityByButtonClose() {
 
     savedCity.splice(indexCity, 1)
     this.parentElement.remove()
-    UI_ELEMENTS.WEATHER_NOW_BUTTON.style.background = 'url("./img/heart.svg")'
+    if (UI_ELEMENTS.WEATHER_CITY_NOW.textContent === thisCity) {
+        UI_ELEMENTS.WEATHER_NOW_BUTTON.style.background = 'url("./img/heart.svg")'
+    }
 }
 
 function chooseSavedCity() {
