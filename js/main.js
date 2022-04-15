@@ -50,6 +50,7 @@ function saveCity() {
     const cityNow = UI_ELEMENTS.WEATHER_CITY_NOW.textContent
     const templateCity = TEMPLATE_ELEMENT.CITY_ITEM.content.cloneNode(true)
     const includeCity = savedCity.findIndex(item => item === cityNow)
+    const isNotEmptySavedList = UI_ELEMENTS.WEATHER_NOW_BUTTON.style.background === 'url("./img/heart.svg")'
 
     if (~includeCity) {
         savedCity.splice(includeCity, 1)
@@ -66,7 +67,9 @@ function saveCity() {
         UI_ELEMENTS.WEATHER_NOW_BUTTON.style.background = 'url("./img/heart_red.svg")'
     }
 
-    chooseSavedCity()
+    if (isNotEmptySavedList) {
+        chooseSavedCity()
+    }
 
     const cityList = document.querySelectorAll('.city-list__close-btn')
     for (let city of cityList) {
@@ -89,10 +92,8 @@ function deleteCityByButtonClose() {
 function chooseSavedCity() {
     const cityList = document.querySelectorAll('.city')
 
-    for (let cityListElement of cityList) {
-        cityListElement.addEventListener('click', function () {
-            const searchCity = this.textContent
-            getWeather(searchCity)
-        })
-    }
+    cityList[cityList.length - 1].addEventListener('click', function () {
+        const searchCity = this.textContent
+        getWeather(searchCity)
+    })
 }
