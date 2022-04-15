@@ -1,4 +1,4 @@
-import {TEMPLATE_ELEMENT, UI_ELEMENTS} from "./view.js";
+import {TEMPLATE_ELEMENT, UI_ELEMENTS, changeParamsOnNow, changeParamsOnDetails} from "./view.js";
 
 const savedCity = []
 const SERVER_URL = 'https://api.openweathermap.org/data/2.5/weather';
@@ -22,12 +22,8 @@ function getWeather(switchOfCity) {
         })
         .then(response => response.json())
         .then(item => {
-            const tempCelsius = Math.round(item.main.temp - 273.15)
-            UI_ELEMENTS.WEATHER_NOW.textContent = `${tempCelsius}°`
-            UI_ELEMENTS.WEATHER_CITY_NOW.textContent = `${item.name}`
-
-            const icon = item.weather[0].icon
-            UI_ELEMENTS.WEATHER_NOW_IMG.src = `https://openweathermap.org/img/wn/${icon}@4x.png`
+            changeParamsOnNow(item)
+            changeParamsOnDetails(item)
         })
         .then(() => {
             const cityInSaved = savedCity.findIndex(item => item === UI_ELEMENTS.WEATHER_CITY_NOW.textContent)
