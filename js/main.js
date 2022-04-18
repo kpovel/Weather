@@ -1,14 +1,15 @@
-import {UI_ELEMENTS, changeParamsTabNow, changeParamsTabDetails} from "./view.js";
+import {UI_ELEMENTS, changeParamsTabNow, changeParamsTabDetails, changeParamsTabForecast} from "./view.js";
 
 const savedCities = [];
 const SERVER_URL = 'https://api.openweathermap.org/data/2.5/weather';
+const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 const API_KEY = '4783b73cfe02019303d03a9d793cc64b';
 
 
 UI_ELEMENTS.INPUT.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') getWeather()
-})
-UI_ELEMENTS.BUTTON.addEventListener('click', getWeather)
+});
+UI_ELEMENTS.BUTTON.addEventListener('click', getWeather);
 
 function getWeather(switchOfCity) {
     const cityName = switchOfCity ? switchOfCity : UI_ELEMENTS.INPUT.value.trim();
@@ -20,6 +21,7 @@ function getWeather(switchOfCity) {
         })
         .then(response => response.json())
         .then(item => {
+            console.log(item)
             changeParamsTabNow(item);
             changeParamsTabDetails(item);
         })
@@ -40,11 +42,24 @@ function getWeather(switchOfCity) {
                 alert(err);
             }
         })
-        .finally(() => UI_ELEMENTS.INPUT.value = null)
+        .finally(() => {
+            UI_ELEMENTS.INPUT.value = null;
+            forecast(cityName);
+        })
 }
 
+function forecast (city){
+    const url = `${FORECAST_URL}?q=${city}&cnt=3&appid=${API_KEY}`;
+    fetch (url)
+        .then(response => response.json())
+        .then(item => {
+            console.log(item);
+            changeParamsTabForecast(item);
+        })
 
-UI_ELEMENTS.NOW.BUTTON.addEventListener('click', manipulationSavedCities)
+}
+
+UI_ELEMENTS.NOW.BUTTON.addEventListener('click', manipulationSavedCities);
 
 function manipulationSavedCities() {
     const cityNow = UI_ELEMENTS.NOW.CITY.textContent;
