@@ -1,4 +1,4 @@
-import {UI_ELEMENTS, changeParamsTabNow, changeParamsTabDetails, changeParamsTabForecast} from "./view.js";
+import {UI_ELEMENTS, changeParamsTabNow, changeParamsTabDetails, changeParamsTabForecast, replaceHeart} from "./view.js";
 
 const savedCities = [];
 const SERVER_URL = 'https://api.openweathermap.org/data/2.5/weather';
@@ -21,17 +21,13 @@ function getWeather(switchOfCity) {
         })
         .then(response => response.json())
         .then(item => {
-            console.log(item)
             changeParamsTabNow(item);
             changeParamsTabDetails(item);
+            forecast(cityName);
         })
         .then(() => {
             const cityInSaved = savedCities.findIndex(item => item === UI_ELEMENTS.NOW.CITY.textContent);
-            if (~cityInSaved) {
-                UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart_red.svg")';
-            } else {
-                UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
-            }
+            replaceHeart(cityInSaved)
         })
         .catch((err) => {
             if (err.name === 'URIError') {
@@ -42,21 +38,15 @@ function getWeather(switchOfCity) {
                 alert(err);
             }
         })
-        .finally(() => {
-            UI_ELEMENTS.INPUT.value = null;
-            forecast(cityName);
-        })
+        .finally(() => UI_ELEMENTS.INPUT.value = null)
 }
 
 function forecast (city){
     const url = `${FORECAST_URL}?q=${city}&cnt=3&appid=${API_KEY}`;
     fetch (url)
         .then(response => response.json())
-        .then(item => {
-            console.log(item);
-            changeParamsTabForecast(item);
-        })
-
+        .then(item => changeParamsTabForecast(item))
+        .catch(alert)
 }
 
 UI_ELEMENTS.NOW.BUTTON.addEventListener('click', manipulationSavedCities);

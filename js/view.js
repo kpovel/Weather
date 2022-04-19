@@ -1,6 +1,7 @@
 export const UI_ELEMENTS = {
     INPUT: document.querySelector('.search__input'),
     BUTTON: document.querySelector('.search__btn'),
+    TABS: document.querySelectorAll('.main-tabs__item'),
 
     CITY_LIST: document.querySelector('.city-list'),
     CITY_LIST_ITEM: document.querySelectorAll('.city-list__item'),
@@ -24,6 +25,9 @@ export const UI_ELEMENTS = {
     FORECAST: {
         TITLE: document.querySelector('.weather-forecast__title'),
         WEATHER_LIST: document.querySelectorAll('.weather-forecast__list-item'),
+        DATE: document.querySelectorAll('.weather-forecast__top'),
+        PARAMETERS: document.querySelectorAll('.weather-forecast__parameters'),
+        PRECIPITATION: document.querySelectorAll('.weather-forecast__precipitation'),
     },
 
     TEMPLATE_ELEMENT: {
@@ -31,8 +35,7 @@ export const UI_ELEMENTS = {
     },
 }
 
-const tabs = document.querySelectorAll('.main-tabs__item')
-for (let tab of tabs) {
+for (let tab of UI_ELEMENTS.TABS) {
     tab.addEventListener('click', switchTab);
 }
 
@@ -50,8 +53,7 @@ function switchTab() {
 
 
 export function changeParamsTabNow(item) {
-    const tempCelsius = Math.round(item.main.temp - 273.15);
-    UI_ELEMENTS.NOW.TEMPERATURE.textContent = `${tempCelsius}°`;
+    UI_ELEMENTS.NOW.TEMPERATURE.textContent = `${tempToCelsius(item.main.temp)}`;
     UI_ELEMENTS.NOW.CITY.textContent = `${item.name}`;
 
     const icon = item.weather[0].icon;
@@ -60,26 +62,40 @@ export function changeParamsTabNow(item) {
 
 export function changeParamsTabDetails(item) {
     UI_ELEMENTS.DETAILS.TITLE.textContent = `${item.name}`;
-    UI_ELEMENTS.DETAILS.TEMPERATURE.textContent = `${Math.round(item.main.temp - 273.15)}°`;
-    UI_ELEMENTS.DETAILS.FEELS_LIKE.textContent = `${Math.round(item.main.feels_like - 273.15)}°`;
+    UI_ELEMENTS.DETAILS.TEMPERATURE.textContent = `${tempToCelsius(item.main.temp)}`;
+    UI_ELEMENTS.DETAILS.FEELS_LIKE.textContent = `${tempToCelsius(item.main.feels_like)}`;
     UI_ELEMENTS.DETAILS.WEATHER.textContent = `${item.weather[0].main}`;
     UI_ELEMENTS.DETAILS.SUNRISE.textContent = getTime(item.sys.sunrise);
     UI_ELEMENTS.DETAILS.SUNSET.textContent = getTime(item.sys.sunset);
 }
 
 export function changeParamsTabForecast(item) {
-    UI_ELEMENTS.FORECAST.TITLE.textContent = item.city.name;
+    const {
+        FORECAST: {
+            TITLE: titleForecast,
+            WEATHER_LIST: weatherList,
+            DATE: forecastDate,
+            PARAMETERS: tempParams,
+            PRECIPITATION: precipitation,
+        }
+    } = UI_ELEMENTS;
 
-    for (let i = 0; i < UI_ELEMENTS.FORECAST.WEATHER_LIST.length; i++) {
+    titleForecast.textContent = item.city.name;
+
+    for (let i = 0; i < weatherList.length; i++) {
         const date = new Date(item.list[i].dt * 1000);
         const icon = item.list[i].weather[0].icon;
-        UI_ELEMENTS.FORECAST.WEATHER_LIST[i].firstElementChild.firstElementChild.textContent = `${date.getDate()}  ${getMonth(date.getMonth())}`;
-        UI_ELEMENTS.FORECAST.WEATHER_LIST[i].firstElementChild.lastElementChild.textContent = getTime(date / 1000);
-        UI_ELEMENTS.FORECAST.WEATHER_LIST[i].lastElementChild.firstElementChild.firstElementChild.textContent = `Temperature: ${Math.round(item.list[i].main.temp - 273.15)}°`;
-        UI_ELEMENTS.FORECAST.WEATHER_LIST[i].lastElementChild.firstElementChild.lastElementChild.textContent = `Feels like: ${Math.round(item.list[i].main.feels_like - 273.15)}°`;
-        UI_ELEMENTS.FORECAST.WEATHER_LIST[i].lastElementChild.lastElementChild.firstElementChild.textContent = item.list[i].weather[0].main;
-        UI_ELEMENTS.FORECAST.WEATHER_LIST[i].lastElementChild.lastElementChild.lastElementChild.src = `https://openweathermap.org/img/wn/${icon}.png`;
+        forecastDate[i].firstElementChild.textContent = `${date.getDate()}  ${getMonth(date.getMonth())}`;
+        forecastDate[i].lastElementChild.textContent = getTime(date / 1000);
+        tempParams[i].firstElementChild.textContent = `Temperature: ${tempToCelsius(item.list[i].main.temp)}`;
+        tempParams[i].lastElementChild.textContent = `Feels like: ${tempToCelsius(item.list[i].main.feels_like)}`;
+        precipitation[i].firstElementChild.textContent = item.list[i].weather[0].main;
+        precipitation[i].lastElementChild.src = `https://openweathermap.org/img/wn/${icon}.png`;
     }
+}
+
+function tempToCelsius(tempKelvin) {
+    return `${Math.round(tempKelvin - 273.15)}°`;
 }
 
 function getTime(value) {
@@ -116,5 +132,13 @@ function getMonth(date) {
             return 'Nov';
         case 11:
             return 'Dec';
+    }
+}
+
+export function replaceHeart (cityInSaved){
+    if (~cityInSaved) {
+        UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart_red.svg")';
+    } else {
+        UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
     }
 }
