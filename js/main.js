@@ -1,4 +1,5 @@
-import {UI_ELEMENTS, changeParamsTabNow, changeParamsTabDetails, changeParamsTabForecast, replaceHeart} from "./view.js";
+import {UI_ELEMENTS, changeParamsTabNow, changeParamsTabDetails, changeParamsTabForecast, manipulationSavedCitiesUI} from "./view.js";
+import {replaceHeart} from "./utilities.js";
 
 const savedCities = [];
 const SERVER_URL = 'https://api.openweathermap.org/data/2.5/weather';
@@ -23,7 +24,7 @@ function getWeather(switchOfCity) {
         .then(item => {
             changeParamsTabNow(item);
             changeParamsTabDetails(item);
-            forecast(cityName);
+            getForecastWeather(cityName);
         })
         .then(() => {
             const cityInSaved = savedCities.findIndex(item => item === UI_ELEMENTS.NOW.CITY.textContent);
@@ -34,16 +35,16 @@ function getWeather(switchOfCity) {
                 alert(err);
             } else if (err.name === 'TypeError') {
                 alert(`${err.name}: undefined city`);
-            }else {
+            } else {
                 alert(err);
             }
         })
         .finally(() => UI_ELEMENTS.INPUT.value = null)
 }
 
-function forecast (city){
+function getForecastWeather(city) {
     const url = `${FORECAST_URL}?q=${city}&cnt=3&appid=${API_KEY}`;
-    fetch (url)
+    fetch(url)
         .then(response => response.json())
         .then(item => changeParamsTabForecast(item))
         .catch(alert)
@@ -53,32 +54,22 @@ UI_ELEMENTS.NOW.BUTTON.addEventListener('click', manipulationSavedCities);
 
 function manipulationSavedCities() {
     const cityNow = UI_ELEMENTS.NOW.CITY.textContent;
-    const templateCity = UI_ELEMENTS.TEMPLATE_ELEMENT.CITY_ITEM.content.cloneNode(true);
     const includeCity = savedCities.findIndex(item => item === cityNow);
     const isNotEmptySavedList = UI_ELEMENTS.NOW.BUTTON.style.background === 'url("./img/heart.svg")';
 
     if (~includeCity) {
         savedCities.splice(includeCity, 1);
-        const cityList = document.querySelectorAll('.city-list__item');
-        cityList[includeCity].remove();
-
-        UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
     } else {
         savedCities.push(cityNow);
-
-        templateCity.firstElementChild.firstElementChild.textContent = cityNow;
-        UI_ELEMENTS.CITY_LIST.append(templateCity);
-
-        UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart_red.svg")';
     }
 
+    manipulationSavedCitiesUI(includeCity, cityNow)
     if (isNotEmptySavedList) chooseSavedCity();
 
     const closeButtonList = document.querySelectorAll('.city-list__close-btn');
     for (const button of closeButtonList) {
         button.addEventListener('click', deleteCityByButtonClose);
     }
-    console.log(savedCities);
 }
 
 function deleteCityByButtonClose() {
@@ -96,7 +87,7 @@ function chooseSavedCity() {
     const cityList = document.querySelectorAll('.city');
 
     cityList[cityList.length - 1].addEventListener('click', function () {
-        const searchCity = this.textContent;
-        getWeather(searchCity);
+        const savedCity = this.textContent;
+        getWeather(savedCity);
     })
 }
