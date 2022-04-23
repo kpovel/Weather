@@ -1,7 +1,14 @@
-import {UI_ELEMENTS, changeParamsTabNow, changeParamsTabDetails, changeParamsTabForecast, manipulationSavedCitiesUI} from "./view.js";
+import {
+    UI_ELEMENTS,
+    changeParamsTabNow,
+    changeParamsTabDetails,
+    changeParamsTabForecast,
+    manipulationSavedCitiesUI,
+} from "./view.js";
+import {renderingSavedCitiesOnReload} from "./localStorage.js";
 import {replaceHeart} from "./utilities.js";
 
-const savedCities = [];
+export const savedCities = [];
 const SERVER_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 const API_KEY = '4783b73cfe02019303d03a9d793cc64b';
@@ -12,7 +19,7 @@ UI_ELEMENTS.INPUT.addEventListener('keydown', function (e) {
 });
 UI_ELEMENTS.BUTTON.addEventListener('click', getWeather);
 
-function getWeather(switchOfCity) {
+export function getWeather(switchOfCity) {
     const cityName = switchOfCity ? switchOfCity : UI_ELEMENTS.INPUT.value.trim();
     const url = `${SERVER_URL}?q=${cityName}&appid=${API_KEY}`;
 
@@ -25,6 +32,7 @@ function getWeather(switchOfCity) {
             changeParamsTabNow(item);
             changeParamsTabDetails(item);
             getForecastWeather(cityName);
+            localStorage.setItem('lastSelectedCity', item.name);
         })
         .then(() => {
             const cityInSaved = savedCities.findIndex(item => item === UI_ELEMENTS.NOW.CITY.textContent);
@@ -54,16 +62,18 @@ UI_ELEMENTS.NOW.BUTTON.addEventListener('click', manipulationSavedCities);
 
 function manipulationSavedCities() {
     const cityNow = UI_ELEMENTS.NOW.CITY.textContent;
-    const includeCity = savedCities.findIndex(item => item === cityNow);
+    const savedCity = savedCities.findIndex(item => item === cityNow);
     const isNotEmptySavedList = UI_ELEMENTS.NOW.BUTTON.style.background === 'url("./img/heart.svg")';
 
-    if (~includeCity) {
-        savedCities.splice(includeCity, 1);
+    if (~savedCity) {
+        savedCities.splice(savedCity, 1);
+        localStorage.removeItem(cityNow);
     } else {
         savedCities.push(cityNow);
+        localStorage.setItem(cityNow, cityNow);
     }
 
-    manipulationSavedCitiesUI(includeCity, cityNow)
+    manipulationSavedCitiesUI(savedCity, cityNow);
     if (isNotEmptySavedList) chooseSavedCity();
 
     const closeButtonList = document.querySelectorAll('.city-list__close-btn');
@@ -78,6 +88,7 @@ function deleteCityByButtonClose() {
 
     savedCities.splice(indexCity, 1);
     this.parentElement.remove();
+    localStorage.removeItem(thisCity);
     if (UI_ELEMENTS.NOW.CITY.textContent === thisCity) {
         UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
     }
@@ -91,3 +102,5 @@ function chooseSavedCity() {
         getWeather(savedCity);
     })
 }
+
+renderingSavedCitiesOnReload();
