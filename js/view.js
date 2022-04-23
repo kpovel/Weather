@@ -71,13 +71,12 @@ export function changeParamsTabDetails(item) {
             temp: temperatureKelvin,
             feels_like: feelsLikeKelvin,
         },
-        weather: [{cloudCover}],
+        weather: [{main: cloudCover}],
         sys: {
             sunrise,
             sunset,
         },
     } = item
-
     UI_ELEMENTS.DETAILS.TITLE.textContent = `${cityName}`;
     UI_ELEMENTS.DETAILS.TEMPERATURE.textContent = `${tempToCelsius(temperatureKelvin)}`;
     UI_ELEMENTS.DETAILS.FEELS_LIKE.textContent = `${tempToCelsius(feelsLikeKelvin)}`;
