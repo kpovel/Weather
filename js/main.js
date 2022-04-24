@@ -5,7 +5,7 @@ import {
     changeParamsTabForecast,
     manipulationSavedCitiesUI,
 } from "./view.js";
-import {renderingSavedCitiesOnReload} from "./localStorage.js";
+import {renderingSavedCitiesOnReload} from "./storage.js";
 import {replaceHeart} from "./utilities.js";
 
 export const savedCities = [];
@@ -32,7 +32,7 @@ export function getWeather(switchOfCity) {
             changeParamsTabNow(item);
             changeParamsTabDetails(item);
             getForecastWeather(cityName);
-            localStorage.setItem('lastSelectedCity', item.name);
+            localStorage.setItem('currentCity', item.name);
         })
         .then(() => {
             const cityInSaved = savedCities.findIndex(item => item === UI_ELEMENTS.NOW.CITY.textContent);
@@ -67,10 +67,10 @@ function manipulationSavedCities() {
 
     if (~savedCity) {
         savedCities.splice(savedCity, 1);
-        localStorage.removeItem(cityNow);
+        localStorage.setItem('favoriteCities', JSON.stringify(savedCities));
     } else {
         savedCities.push(cityNow);
-        localStorage.setItem(cityNow, cityNow);
+        localStorage.setItem('favoriteCities', JSON.stringify(savedCities));
     }
 
     manipulationSavedCitiesUI(savedCity, cityNow);
@@ -88,7 +88,7 @@ function deleteCityByButtonClose() {
 
     savedCities.splice(indexCity, 1);
     this.parentElement.remove();
-    localStorage.removeItem(thisCity);
+    localStorage.setItem('favoriteCities', JSON.stringify(savedCities));
     if (UI_ELEMENTS.NOW.CITY.textContent === thisCity) {
         UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
     }
