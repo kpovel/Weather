@@ -57,7 +57,7 @@ export function changeParamsTabNow(item) {
         },
         name: cityName,
         weather: [{icon}]
-    } = item
+    } = item;
 
     UI_ELEMENTS.NOW.TEMPERATURE.textContent = `${tempToCelsius(temperatureKelvin)}`;
     UI_ELEMENTS.NOW.CITY.textContent = `${cityName}`;
@@ -76,7 +76,7 @@ export function changeParamsTabDetails(item) {
             sunrise,
             sunset,
         },
-    } = item
+    } = item;
     UI_ELEMENTS.DETAILS.TITLE.textContent = `${cityName}`;
     UI_ELEMENTS.DETAILS.TEMPERATURE.textContent = `${tempToCelsius(temperatureKelvin)}`;
     UI_ELEMENTS.DETAILS.FEELS_LIKE.textContent = `${tempToCelsius(feelsLikeKelvin)}`;
@@ -122,5 +122,14 @@ export function manipulationSavedCitiesUI(savedCity, selectedCity) {
         UI_ELEMENTS.CITY_LIST.append(templateCity);
 
         UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart_red.svg")';
+    }
+}
+
+export function deleteCityByButtonCloseUI(element) {
+    element.parentElement.remove();
+
+    const thisCityIsSelected = element.previousElementSibling.textContent.trim() === UI_ELEMENTS.NOW.CITY.textContent;
+    if (thisCityIsSelected){
+        UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
     }
 }

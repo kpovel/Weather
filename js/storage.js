@@ -1,5 +1,5 @@
 import {getWeather, savedCities} from "./main.js";
-import {UI_ELEMENTS} from "./view.js";
+import {UI_ELEMENTS, deleteCityByButtonCloseUI} from "./view.js";
 
 export function renderingSavedCitiesOnReload() {
     const cities = JSON.parse(localStorage.getItem('favoriteCities'));
@@ -36,12 +36,7 @@ function deleteCityByButtonClose() {
             savedCities.splice(savedCity, 1);
             localStorage.setItem('favoriteCities', JSON.stringify(savedCities));
             
-            this.parentElement.remove();
-
-            const thisCityIsSelected = this.previousElementSibling.textContent.trim() === UI_ELEMENTS.NOW.CITY.textContent;
-            if (thisCityIsSelected){
-                UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
-            }
+            deleteCityByButtonCloseUI(this)
         })
     }
 }
