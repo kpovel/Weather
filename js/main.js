@@ -45,12 +45,12 @@ export async function getWeather(switchOfCity) {
 async function getForecastWeather(city) {
     try {
         const url = `${FORECAST_URL}?q=${city}&cnt=3&appid=${API_KEY}`;
-        const response = await fetch(url)
-        const weather = await response.json()
-        changeParamsTabForecast(weather)
+        const response = await fetch(url);
+        const weather = await response.json();
+        changeParamsTabForecast(weather);
     }
     catch (err) {
-        alert(err)
+        alert(err);
     }
 }
 
@@ -99,4 +99,4 @@ function chooseSavedCity() {
     })
 }
 
-renderingSavedCitiesOnReload();
+await renderingSavedCitiesOnReload();

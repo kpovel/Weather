@@ -129,7 +129,7 @@ export function deleteCityByButtonCloseUI(element) {
     element.parentElement.remove();
 
     const thisCityIsSelected = element.previousElementSibling.textContent.trim() === UI_ELEMENTS.NOW.CITY.textContent;
-    if (thisCityIsSelected){
+    if (thisCityIsSelected) {
         UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
     }
 }
