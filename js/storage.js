@@ -1,7 +1,7 @@
 import {getWeather, savedCities} from "./main.js";
 import {UI_ELEMENTS, deleteCityByButtonCloseUI} from "./view.js";
 
-export function renderingSavedCitiesOnReload() {
+export async function renderingSavedCitiesOnReload() {
     const cities = JSON.parse(localStorage.getItem('favoriteCities'));
     for (const city of cities) {
         if (city === 'currentCity') continue
@@ -11,21 +11,31 @@ export function renderingSavedCitiesOnReload() {
     }
 
     switchBetweenRenderedCities();
+    await chooseLastSelectedCity();
     deleteCityByButtonClose();
-    chooseLastSelectedCity();
-}
-
-function chooseLastSelectedCity() {
-    const getCurrentCity = localStorage.getItem('currentCity');
-    if (getCurrentCity) {
-        getWeather(getCurrentCity);
-    }
 }
 
 function renderCityUI(city) {
     const templateCity = UI_ELEMENTS.TEMPLATE_ELEMENT.CITY_ITEM.content.cloneNode(true);
     templateCity.firstElementChild.firstElementChild.textContent = city;
     UI_ELEMENTS.CITY_LIST.append(templateCity);
+}
+
+function switchBetweenRenderedCities() {
+    const cityNames = document.querySelectorAll('.city');
+    for (const cityName of cityNames) {
+        cityName.addEventListener('click', async function () {
+            const city = this.textContent;
+            await getWeather(city);
+        })
+    }
+}
+
+async function chooseLastSelectedCity() {
+    const getCurrentCity = localStorage.getItem('currentCity');
+    if (getCurrentCity) {
+        await getWeather(getCurrentCity);
+    }
 }
 
 function deleteCityByButtonClose() {
@@ -35,18 +45,8 @@ function deleteCityByButtonClose() {
             const savedCity = savedCities.findIndex(city => city === this.previousElementSibling.textContent.trim());
             savedCities.splice(savedCity, 1);
             localStorage.setItem('favoriteCities', JSON.stringify(savedCities));
-            
-            deleteCityByButtonCloseUI(this)
-        })
-    }
-}
 
-function switchBetweenRenderedCities() {
-    const cityNames = document.querySelectorAll('.city');
-    for (const cityName of cityNames) {
-        cityName.addEventListener('click', function () {
-            const city = this.textContent;
-            getWeather(city);
+            deleteCityByButtonCloseUI(this);
         })
     }
 }
