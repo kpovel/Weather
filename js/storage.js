@@ -3,16 +3,18 @@ import {UI_ELEMENTS, deleteCityByButtonCloseUI} from "./view.js";
 
 export async function renderingSavedCitiesOnReload() {
     const cities = JSON.parse(localStorage.getItem('favoriteCities'));
-    for (const city of cities) {
-        if (city === 'currentCity') continue
-        savedCities.push(city);
+    if (cities) {
+        for (const city of cities) {
+            if (city === 'currentCity') continue
+            savedCities.add(city);
 
-        renderCityUI(city);
+            renderCityUI(city);
+        }
+
+        switchBetweenRenderedCities();
+        await chooseLastSelectedCity();
+        deleteCityByButtonClose();
     }
-
-    switchBetweenRenderedCities();
-    await chooseLastSelectedCity();
-    deleteCityByButtonClose();
 }
 
 function renderCityUI(city) {
@@ -42,9 +44,8 @@ function deleteCityByButtonClose() {
     const cityNames = document.querySelectorAll('.city-list__item');
     for (const cityName of cityNames) {
         cityName.lastElementChild.addEventListener('click', function () {
-            const savedCity = savedCities.findIndex(city => city === this.previousElementSibling.textContent.trim());
-            savedCities.splice(savedCity, 1);
-            localStorage.setItem('favoriteCities', JSON.stringify(savedCities));
+            savedCities.delete(this.previousElementSibling.textContent);
+            localStorage.setItem('favoriteCities', JSON.stringify([...savedCities]));
 
             deleteCityByButtonCloseUI(this);
         })

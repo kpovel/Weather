@@ -1,10 +1,14 @@
 import {
-    UI_ELEMENTS, changeParamsTabNow, changeParamsTabDetails, changeParamsTabForecast, manipulationSavedCitiesUI,
+    UI_ELEMENTS,
+    changeParamsTabNow,
+    changeParamsTabDetails,
+    changeParamsTabForecast,
+    manipulationSavedCitiesUI,
 } from "./view.js";
 import {renderingSavedCitiesOnReload} from "./storage.js";
 import {replaceHeart} from "./utilities.js";
 
-export const savedCities = [];
+export const savedCities = new Set();
 const SERVER_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const FORECAST_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 const API_KEY = '4783b73cfe02019303d03a9d793cc64b';
@@ -29,7 +33,7 @@ export async function getWeather(switchOfCity) {
 
         localStorage.setItem('currentCity', weather.name);
 
-        const cityInSaved = savedCities.findIndex(item => item === UI_ELEMENTS.NOW.CITY.textContent);
+        const cityInSaved = savedCities.has(UI_ELEMENTS.NOW.CITY.textContent);
         replaceHeart(cityInSaved)
     }
     catch (err) {
@@ -58,15 +62,15 @@ UI_ELEMENTS.NOW.BUTTON.addEventListener('click', manipulationSavedCities);
 
 function manipulationSavedCities() {
     const cityNow = UI_ELEMENTS.NOW.CITY.textContent;
-    const savedCity = savedCities.findIndex(item => item === cityNow);
+    const savedCity = savedCities.has(cityNow);
     const isNotEmptySavedList = UI_ELEMENTS.NOW.BUTTON.style.background === 'url("./img/heart.svg")';
 
-    if (~savedCity) {
-        savedCities.splice(savedCity, 1);
-        localStorage.setItem('favoriteCities', JSON.stringify(savedCities));
+    if (savedCity) {
+        savedCities.delete(cityNow);
+        localStorage.setItem('favoriteCities', JSON.stringify([...savedCities]));
     } else {
-        savedCities.push(cityNow);
-        localStorage.setItem('favoriteCities', JSON.stringify(savedCities));
+        savedCities.add(cityNow);
+        localStorage.setItem('favoriteCities', JSON.stringify([...savedCities]));
     }
 
     manipulationSavedCitiesUI(savedCity, cityNow);
@@ -80,11 +84,10 @@ function manipulationSavedCities() {
 
 function deleteCityByButtonClose() {
     const thisCity = this.previousElementSibling.textContent;
-    const indexCity = savedCities.findIndex(item => item === thisCity);
+    savedCities.delete(thisCity);
 
-    savedCities.splice(indexCity, 1);
     this.parentElement.remove();
-    localStorage.setItem('favoriteCities', JSON.stringify(savedCities));
+    localStorage.setItem('favoriteCities', JSON.stringify([...savedCities]));
     if (UI_ELEMENTS.NOW.CITY.textContent === thisCity) {
         UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
     }

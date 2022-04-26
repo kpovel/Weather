@@ -112,9 +112,17 @@ export function changeParamsTabForecast(item) {
 
 export function manipulationSavedCitiesUI(savedCity, selectedCity) {
     const templateCity = UI_ELEMENTS.TEMPLATE_ELEMENT.CITY_ITEM.content.cloneNode(true);
-    if (~savedCity) {
+    if (savedCity) {
         const cityList = document.querySelectorAll('.city-list__item');
-        cityList[savedCity].remove();
+
+        for (const cityListElement of cityList) {
+            const desiredCity = cityListElement.firstElementChild.textContent === selectedCity
+
+            if (desiredCity) {
+                cityListElement.remove();
+                break;
+            }
+        }
 
         UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
     } else {

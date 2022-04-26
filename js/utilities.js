@@ -42,7 +42,7 @@ export function abbreviateMonth(date) {
 }
 
 export function replaceHeart(cityInSaved) {
-    if (~cityInSaved) {
+    if (cityInSaved) {
         UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart_red.svg")';
     } else {
         UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
