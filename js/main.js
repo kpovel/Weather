@@ -33,8 +33,8 @@ export async function getWeather(switchOfCity) {
 
         localStorage.setItem('currentCity', weather.name);
 
-        const cityInSaved = savedCities.has(UI_ELEMENTS.NOW.CITY.textContent);
-        replaceHeart(cityInSaved)
+        const isCitySaved = savedCities.has(UI_ELEMENTS.NOW.CITY.textContent);
+        replaceHeart(isCitySaved)
     }
     catch (err) {
         if (err.name === 'TypeError') {
