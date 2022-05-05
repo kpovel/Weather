@@ -171,11 +171,18 @@ body {
 }
 
 .weather-now__btn {
-    background: url("./img/heart.svg");
     width: 24px;
     height: 24px;
     border: none;
     cursor: pointer;
+}
+
+.weather-now__btn[heart="noChecked"]{
+    background: url("./img/heart.svg");
+}
+
+.weather-now__btn[heart="checked"]{
+    background: url("./img/heart_red.svg");
 }
 
 .active-heard {

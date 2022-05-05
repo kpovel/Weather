@@ -1,4 +1,5 @@
-import {tempToCelsius, getTime, abbreviateMonth} from "./utilities.js"
+import {tempToCelsius, getTime} from "./utilities.js"
+import {format} from 'date-fns';
 
 export const UI_ELEMENTS = {
     INPUT: document.querySelector('.search__input'),
@@ -81,8 +82,8 @@ export function changeParamsTabDetails(item) {
     UI_ELEMENTS.DETAILS.TEMPERATURE.textContent = `${tempToCelsius(temperatureKelvin)}`;
     UI_ELEMENTS.DETAILS.FEELS_LIKE.textContent = `${tempToCelsius(feelsLikeKelvin)}`;
     UI_ELEMENTS.DETAILS.WEATHER.textContent = `${cloudCover}`;
-    UI_ELEMENTS.DETAILS.SUNRISE.textContent = getTime(sunrise);
-    UI_ELEMENTS.DETAILS.SUNSET.textContent = getTime(sunset);
+    UI_ELEMENTS.DETAILS.SUNRISE.textContent = `${format(sunrise * 1000, 'HH')}:${format(sunrise * 1000, 'mm')}`;
+    UI_ELEMENTS.DETAILS.SUNSET.textContent = `${format(sunset * 1000, 'HH')}:${format(sunset * 1000, 'mm')}`;
 }
 
 export function changeParamsTabForecast(item) {
@@ -101,8 +102,8 @@ export function changeParamsTabForecast(item) {
     weatherList.forEach((element, i) => {
         const date = new Date(item.list[i].dt * 1000);
         const icon = item.list[i].weather[0].icon;
-        forecastDate[i].firstElementChild.textContent = `${date.getDate()}  ${abbreviateMonth(date.getMonth())}`;
-        forecastDate[i].lastElementChild.textContent = getTime(date / 1000);
+        forecastDate[i].firstElementChild.textContent = `${date.getDate()}  ${format(date, 'LLL')}`;
+        forecastDate[i].lastElementChild.textContent = `${format(date, 'HH')}:${format(date, 'mm')}`;
         tempParams[i].firstElementChild.textContent = `Temperature: ${tempToCelsius(item.list[i].main.temp)}`;
         tempParams[i].lastElementChild.textContent = `Feels like: ${tempToCelsius(item.list[i].main.feels_like)}`;
         precipitation[i].firstElementChild.textContent = item.list[i].weather[0].main;
@@ -116,7 +117,7 @@ export function manipulationSavedCitiesUI(savedCity, selectedCity) {
         const cityList = document.querySelectorAll('.city-list__item');
 
         for (const cityListElement of cityList) {
-            const desiredCity = cityListElement.firstElementChild.textContent === selectedCity
+            const desiredCity = cityListElement.firstElementChild.textContent === selectedCity;
 
             if (desiredCity) {
                 cityListElement.remove();
@@ -124,12 +125,12 @@ export function manipulationSavedCitiesUI(savedCity, selectedCity) {
             }
         }
 
-        UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
+        UI_ELEMENTS.NOW.BUTTON.setAttribute('heart', 'noChecked');
     } else {
         templateCity.firstElementChild.firstElementChild.textContent = selectedCity;
         UI_ELEMENTS.CITY_LIST.append(templateCity);
 
-        UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart_red.svg")';
+        UI_ELEMENTS.NOW.BUTTON.setAttribute('heart', 'checked');
     }
 }
 
@@ -138,6 +139,6 @@ export function deleteCityByButtonCloseUI(element) {
 
     const thisCityIsSelected = element.previousElementSibling.textContent.trim() === UI_ELEMENTS.NOW.CITY.textContent;
     if (thisCityIsSelected) {
-        UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
+        UI_ELEMENTS.NOW.BUTTON.setAttribute('heart', 'noChecked');
     }
 }

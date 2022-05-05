@@ -5,7 +5,7 @@ import {
     changeParamsTabForecast,
     manipulationSavedCitiesUI,
 } from "./view.js";
-import {renderingSavedCitiesOnReload} from "./storage.js";
+import {showSavedCitiesOnReload} from "./storage.js";
 import {replaceHeart} from "./utilities.js";
 
 export const savedCities = new Set();
@@ -63,7 +63,7 @@ UI_ELEMENTS.NOW.BUTTON.addEventListener('click', manipulationSavedCities);
 function manipulationSavedCities() {
     const cityNow = UI_ELEMENTS.NOW.CITY.textContent;
     const savedCity = savedCities.has(cityNow);
-    const isNotEmptySavedList = UI_ELEMENTS.NOW.BUTTON.style.background === 'url("./img/heart.svg")';
+    const isNotEmptySavedList = UI_ELEMENTS.NOW.BUTTON.getAttribute('heart') === 'noChecked';
 
     if (savedCity) {
         savedCities.delete(cityNow);
@@ -89,7 +89,7 @@ function deleteCityByButtonClose() {
     this.parentElement.remove();
     localStorage.setItem('favoriteCities', JSON.stringify([...savedCities]));
     if (UI_ELEMENTS.NOW.CITY.textContent === thisCity) {
-        UI_ELEMENTS.NOW.BUTTON.style.background = 'url("./img/heart.svg")';
+        UI_ELEMENTS.NOW.BUTTON.setAttribute('heart', 'noChecked');
     }
 }
 
@@ -102,4 +102,4 @@ function chooseSavedCity() {
     })
 }
 
-await renderingSavedCitiesOnReload();
+showSavedCitiesOnReload();

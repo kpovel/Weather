@@ -1,7 +1,7 @@
 import {getWeather, savedCities} from "./main.js";
 import {UI_ELEMENTS, deleteCityByButtonCloseUI} from "./view.js";
 
-export async function renderingSavedCitiesOnReload() {
+export async function showSavedCitiesOnReload() {
     const cities = JSON.parse(localStorage.getItem('favoriteCities'));
 
     async function addCityUI(cities) {
