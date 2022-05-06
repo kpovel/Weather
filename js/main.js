@@ -3,7 +3,7 @@ import {
     changeParamsTabNow,
     changeParamsTabDetails,
     changeParamsTabForecast,
-    manipulationSavedCitiesUI,
+    changeListCitiesByClickingHeartUI,
 } from "./view.js";
 import {showSavedCitiesOnReload} from "./storage.js";
 import {replaceHeart} from "./utilities.js";
@@ -15,9 +15,11 @@ const API_KEY = '4783b73cfe02019303d03a9d793cc64b';
 
 
 UI_ELEMENTS.INPUT.addEventListener('keydown', async function (e) {
-    if (e.key === 'Enter') await getWeather()
+    if (e.key === 'Enter') {
+        await getWeather();
+    }
 });
-UI_ELEMENTS.BUTTON.addEventListener('click', getWeather);
+UI_ELEMENTS.HEART.addEventListener('click', getWeather);
 
 export async function getWeather(switchOfCity) {
     const cityName = switchOfCity ? switchOfCity : UI_ELEMENTS.INPUT.value.trim();
@@ -34,7 +36,7 @@ export async function getWeather(switchOfCity) {
         localStorage.setItem('currentCity', weather.name);
 
         const isCitySaved = savedCities.has(UI_ELEMENTS.NOW.CITY.textContent);
-        replaceHeart(isCitySaved)
+        replaceHeart(isCitySaved);
     }
     catch (err) {
         if (err.name === 'TypeError') {
@@ -43,7 +45,7 @@ export async function getWeather(switchOfCity) {
             alert(err);
         }
     }
-    UI_ELEMENTS.INPUT.value = null
+    UI_ELEMENTS.INPUT.value = null;
 }
 
 async function getForecastWeather(city) {
@@ -58,12 +60,12 @@ async function getForecastWeather(city) {
     }
 }
 
-UI_ELEMENTS.NOW.BUTTON.addEventListener('click', manipulationSavedCities);
+UI_ELEMENTS.NOW.HEART.addEventListener('click', changeListCitiesByClickingHeart);
 
-function manipulationSavedCities() {
+function changeListCitiesByClickingHeart() {
     const cityNow = UI_ELEMENTS.NOW.CITY.textContent;
     const savedCity = savedCities.has(cityNow);
-    const isNotEmptySavedList = UI_ELEMENTS.NOW.BUTTON.getAttribute('heart') === 'noChecked';
+    const isNotEmptySavedList = UI_ELEMENTS.NOW.HEART.getAttribute('heart') === 'noChecked';
 
     if (savedCity) {
         savedCities.delete(cityNow);
@@ -73,33 +75,32 @@ function manipulationSavedCities() {
         localStorage.setItem('favoriteCities', JSON.stringify([...savedCities]));
     }
 
-    manipulationSavedCitiesUI(savedCity, cityNow);
-    if (isNotEmptySavedList) chooseSavedCity();
-
-    const closeButtonList = document.querySelectorAll('.city-list__close-btn');
-    for (const button of closeButtonList) {
-        button.addEventListener('click', deleteCityByButtonClose);
-    }
+    changeListCitiesByClickingHeartUI(savedCity, cityNow);
+    if (isNotEmptySavedList) chooseSavedCityOnClick();
 }
 
-function deleteCityByButtonClose() {
-    const thisCity = this.previousElementSibling.textContent;
-    savedCities.delete(thisCity);
+export function deleteCityByButtonClose() {
+    const closeButtonsList = document.querySelectorAll('.city-list__close-btn');
 
-    this.parentElement.remove();
-    localStorage.setItem('favoriteCities', JSON.stringify([...savedCities]));
-    if (UI_ELEMENTS.NOW.CITY.textContent === thisCity) {
-        UI_ELEMENTS.NOW.BUTTON.setAttribute('heart', 'noChecked');
-    }
+    closeButtonsList[closeButtonsList.length - 1].addEventListener('click', function () {
+        const thisCity = this.previousElementSibling.textContent;
+        savedCities.delete(thisCity);
+        this.parentElement.remove();
+
+        localStorage.setItem('favoriteCities', JSON.stringify([...savedCities]));
+        if (UI_ELEMENTS.NOW.CITY.textContent === thisCity) {
+            UI_ELEMENTS.NOW.HEART.setAttribute('heart', 'noChecked');
+        }
+    });
 }
 
-function chooseSavedCity() {
+function chooseSavedCityOnClick() {
     const cityList = document.querySelectorAll('.city');
 
     cityList[cityList.length - 1].addEventListener('click', async function () {
         const savedCity = this.textContent;
         await getWeather(savedCity);
-    })
+    });
 }
 
 showSavedCitiesOnReload();

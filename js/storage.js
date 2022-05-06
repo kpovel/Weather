@@ -1,5 +1,5 @@
 import {getWeather, savedCities} from "./main.js";
-import {UI_ELEMENTS, deleteCityByButtonCloseUI} from "./view.js";
+import {UI_ELEMENTS, deleteCityByHeartCloseUI} from "./view.js";
 
 export async function showSavedCitiesOnReload() {
     const cities = JSON.parse(localStorage.getItem('favoriteCities'));
@@ -8,17 +8,17 @@ export async function showSavedCitiesOnReload() {
         if (cities[0]) {
             savedCities.add(cities[0]);
             renderCityUI(cities[0]);
-            cities.shift()
+            await cities.shift();
 
-            return await addCityUI(cities)
+            return await addCityUI(cities);
         }
     }
 
-    await addCityUI(cities)
+    await addCityUI(cities);
 
     switchBetweenRenderedCities();
-    await chooseLastSelectedCity();
-    deleteCityByButtonClose();
+    await showLastSelectedCity();
+    deleteCityByHEARTClose();
 }
 
 function renderCityUI(city) {
@@ -30,29 +30,30 @@ function renderCityUI(city) {
 function switchBetweenRenderedCities() {
     const cityNames = document.querySelectorAll('.city');
 
-    for (const cityName of cityNames) {
+    cityNames.forEach(cityName => {
         cityName.addEventListener('click', async function () {
             const city = this.textContent;
             await getWeather(city);
-        })
+        });
+    });
+}
+
+async function showLastSelectedCity() {
+    const lastSelectedCity = localStorage.getItem('currentCity');
+    if (lastSelectedCity) {
+        await getWeather(lastSelectedCity);
     }
 }
 
-async function chooseLastSelectedCity() {
-    const getCurrentCity = localStorage.getItem('currentCity');
-    if (getCurrentCity) {
-        await getWeather(getCurrentCity);
-    }
-}
-
-function deleteCityByButtonClose() {
+function deleteCityByHEARTClose() {
     const cityNames = document.querySelectorAll('.city-list__item');
-    for (const cityName of cityNames) {
+
+    cityNames.forEach(cityName => {
         cityName.lastElementChild.addEventListener('click', function () {
             savedCities.delete(this.previousElementSibling.textContent);
             localStorage.setItem('favoriteCities', JSON.stringify([...savedCities]));
 
-            deleteCityByButtonCloseUI(this);
-        })
-    }
+            deleteCityByHeartCloseUI(this);
+        });
+    });
 }

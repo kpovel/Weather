@@ -171,6 +171,7 @@ body {
   width: 24px;
   height: 24px;
   cursor: pointer;
+  background: url("heart.fb72cff6.svg");
   border: none;
 }
 
@@ -179,10 +180,6 @@ body {
 }
 
 .weather-now__btn[heart="checked"] {
-  background: url("heart_red.6c252af8.svg");
-}
-
-.active-heard {
   background: url("heart_red.6c252af8.svg");
 }
 

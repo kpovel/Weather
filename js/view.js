@@ -1,16 +1,17 @@
-import {tempToCelsius, getTime} from "./utilities.js"
-import {format} from 'date-fns';
+import {deleteCityByButtonClose} from './main';
+import {tempToCelsius} from "./utilities.js";
+import {format} from "date-fns";
 
 export const UI_ELEMENTS = {
     INPUT: document.querySelector('.search__input'),
-    BUTTON: document.querySelector('.search__btn'),
+    HEART: document.querySelector('.search__btn'),
     TABS: document.querySelectorAll('.main-tabs__item'),
     CITY_LIST: document.querySelector('.city-list'),
 
     NOW: {
         TEMPERATURE: document.querySelector('.weather-now__temperature'),
         CITY: document.querySelector('.title-city-now'),
-        BUTTON: document.querySelector('.weather-now__btn'),
+        HEART: document.querySelector('.weather-now__btn'),
         IMG: document.querySelector('.weather-now__img'),
     },
 
@@ -33,7 +34,7 @@ export const UI_ELEMENTS = {
     TEMPLATE_ELEMENT: {
         CITY_ITEM: document.getElementById('city-item'),
     },
-}
+};
 
 for (let tab of UI_ELEMENTS.TABS) {
     tab.addEventListener('click', switchTab);
@@ -108,37 +109,33 @@ export function changeParamsTabForecast(item) {
         tempParams[i].lastElementChild.textContent = `Feels like: ${tempToCelsius(item.list[i].main.feels_like)}`;
         precipitation[i].firstElementChild.textContent = item.list[i].weather[0].main;
         precipitation[i].lastElementChild.src = `https://openweathermap.org/img/wn/${icon}.png`;
-    })
+    });
 }
 
-export function manipulationSavedCitiesUI(savedCity, selectedCity) {
+export function changeListCitiesByClickingHeartUI(savedCity, selectedCity) {
     const templateCity = UI_ELEMENTS.TEMPLATE_ELEMENT.CITY_ITEM.content.cloneNode(true);
+
     if (savedCity) {
-        const cityList = document.querySelectorAll('.city-list__item');
+        const cityList = Array.from(document.querySelectorAll('.city-list__item'));
+        const element = cityList.findIndex(item => item.firstElementChild.textContent === selectedCity);
+        cityList[element].remove();
 
-        for (const cityListElement of cityList) {
-            const desiredCity = cityListElement.firstElementChild.textContent === selectedCity;
-
-            if (desiredCity) {
-                cityListElement.remove();
-                break;
-            }
-        }
-
-        UI_ELEMENTS.NOW.BUTTON.setAttribute('heart', 'noChecked');
+        UI_ELEMENTS.NOW.HEART.setAttribute('heart', 'noChecked');
     } else {
         templateCity.firstElementChild.firstElementChild.textContent = selectedCity;
         UI_ELEMENTS.CITY_LIST.append(templateCity);
 
-        UI_ELEMENTS.NOW.BUTTON.setAttribute('heart', 'checked');
+        UI_ELEMENTS.NOW.HEART.setAttribute('heart', 'checked');
+        
+        deleteCityByButtonClose();
     }
 }
 
-export function deleteCityByButtonCloseUI(element) {
+export function deleteCityByHeartCloseUI(element) {
     element.parentElement.remove();
 
     const thisCityIsSelected = element.previousElementSibling.textContent.trim() === UI_ELEMENTS.NOW.CITY.textContent;
     if (thisCityIsSelected) {
-        UI_ELEMENTS.NOW.BUTTON.setAttribute('heart', 'noChecked');
+        UI_ELEMENTS.NOW.HEART.setAttribute('heart', 'noChecked');
     }
 }

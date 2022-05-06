@@ -20,6 +20,7 @@
     "date-fns": "^2.28.0"
   },
   "devDependencies": {
+    "eslint": "^8.14.0",
     "parcel": "^2.5.0"
   }
 }
