@@ -1,6 +1,6 @@
 import {getWeather, savedCities} from "./main.js";
 import {UI_ELEMENTS, deleteCityByHeartCloseUI} from "./view.js";
-import {getCookie} from "./utilities.js";
+import Cookies from 'js-cookie';
 
 
 export async function showSavedCitiesOnReload() {
@@ -41,7 +41,7 @@ function switchBetweenRenderedCities() {
 }
 
 async function showLastSelectedCity() {
-    const lastSelectedCity = getCookie('currentCity');
+    const lastSelectedCity = Cookies.get('currentCity');
     if (lastSelectedCity) {
         await getWeather(lastSelectedCity);
     }

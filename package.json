@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/kpovel/Weather#readme",
   "dependencies": {
-    "date-fns": "^2.28.0"
+    "date-fns": "^2.28.0",
+    "js-cookie": "^3.0.1"
   },
   "devDependencies": {
     "eslint": "^8.14.0",
