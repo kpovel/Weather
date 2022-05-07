@@ -6,7 +6,7 @@ import {
     changeListCitiesByClickingHeartUI,
 } from "./view.js";
 import {showSavedCitiesOnReload} from "./storage.js";
-import {replaceHeart} from "./utilities.js";
+import {replaceHeart, setCookie} from "./utilities.js";
 
 export const savedCities = new Set();
 const SERVER_URL = 'https://api.openweathermap.org/data/2.5/weather';
@@ -32,8 +32,7 @@ export async function getWeather(switchOfCity) {
         changeParamsTabNow(weather);
         changeParamsTabDetails(weather);
         await getForecastWeather(cityName);
-
-        localStorage.setItem('currentCity', weather.name);
+        setCookie('currentCity', weather.name, {secure: true, 'max-age': 3600});
 
         const isCitySaved = savedCities.has(UI_ELEMENTS.NOW.CITY.textContent);
         replaceHeart(isCitySaved);

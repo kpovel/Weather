@@ -1,5 +1,7 @@
 import {getWeather, savedCities} from "./main.js";
 import {UI_ELEMENTS, deleteCityByHeartCloseUI} from "./view.js";
+import {getCookie} from "./utilities.js";
+
 
 export async function showSavedCitiesOnReload() {
     const cities = JSON.parse(localStorage.getItem('favoriteCities'));
@@ -39,7 +41,7 @@ function switchBetweenRenderedCities() {
 }
 
 async function showLastSelectedCity() {
-    const lastSelectedCity = localStorage.getItem('currentCity');
+    const lastSelectedCity = getCookie('currentCity');
     if (lastSelectedCity) {
         await getWeather(lastSelectedCity);
     }

@@ -554,7 +554,10 @@ async function getWeather(switchOfCity) {
         _viewJs.changeParamsTabNow(weather);
         _viewJs.changeParamsTabDetails(weather);
         await getForecastWeather(cityName);
-        localStorage.setItem('currentCity', weather.name);
+        _utilitiesJs.setCookie('currentCity', weather.name, {
+            secure: true,
+            'max-age': 3600
+        });
         const isCitySaved = savedCities.has(_viewJs.UI_ELEMENTS.NOW.CITY.textContent);
         _utilitiesJs.replaceHeart(isCitySaved);
     } catch (err) {
@@ -729,6 +732,10 @@ parcelHelpers.export(exports, "tempToCelsius", ()=>tempToCelsius
 );
 parcelHelpers.export(exports, "replaceHeart", ()=>replaceHeart
 );
+parcelHelpers.export(exports, "setCookie", ()=>setCookie
+);
+parcelHelpers.export(exports, "getCookie", ()=>getCookie
+);
 var _viewJs = require("./view.js");
 function tempToCelsius(tempKelvin) {
     return `${Math.round(tempKelvin - 273.15)}°`;
@@ -736,6 +743,25 @@ function tempToCelsius(tempKelvin) {
 function replaceHeart(cityInSaved) {
     if (cityInSaved) _viewJs.UI_ELEMENTS.NOW.HEART.setAttribute('heart', 'checked');
     else _viewJs.UI_ELEMENTS.NOW.HEART.setAttribute('heart', 'noChecked');
+}
+function setCookie(name, value, options = {}) {
+    options = {
+        path: '/',
+        // при необходимости добавьте другие значения по умолчанию
+        ...options
+    };
+    if (options.expires instanceof Date) options.expires = options.expires.toUTCString();
+    let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+    for(let optionKey in options){
+        updatedCookie += "; " + optionKey;
+        let optionValue = options[optionKey];
+        if (optionValue !== true) updatedCookie += "=" + optionValue;
+    }
+    document.cookie = updatedCookie;
+}
+function getCookie(name) {
+    let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
 },{"./view.js":"2GA9o","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
@@ -3790,6 +3816,7 @@ parcelHelpers.export(exports, "showSavedCitiesOnReload", ()=>showSavedCitiesOnRe
 );
 var _mainJs = require("./main.js");
 var _viewJs = require("./view.js");
+var _utilitiesJs = require("./utilities.js");
 async function showSavedCitiesOnReload() {
     const cities1 = JSON.parse(localStorage.getItem('favoriteCities'));
     async function addCityUI(cities) {
@@ -3820,7 +3847,7 @@ function switchBetweenRenderedCities() {
     });
 }
 async function showLastSelectedCity() {
-    const lastSelectedCity = localStorage.getItem('currentCity');
+    const lastSelectedCity = _utilitiesJs.getCookie('currentCity');
     if (lastSelectedCity) await _mainJs.getWeather(lastSelectedCity);
 }
 function deleteCityByHEARTClose() {
@@ -3836,6 +3863,6 @@ function deleteCityByHEARTClose() {
     });
 }
 
-},{"./main.js":"bDbGG","./view.js":"2GA9o","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["huMbS","bDbGG"], "bDbGG", "parcelRequire423f")
+},{"./main.js":"bDbGG","./view.js":"2GA9o","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./utilities.js":"f4wib"}]},["huMbS","bDbGG"], "bDbGG", "parcelRequire423f")
 
 //# sourceMappingURL=index.fbb3188c.js.map
