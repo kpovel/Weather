@@ -2,12 +2,27 @@ import {getWeather, savedCities} from "./main.js";
 import {UI_ELEMENTS, deleteCityByHeartCloseUI} from "./view.js";
 import Cookies from 'js-cookie';
 
+export class Storage {
+    constructor(name) {
+        this.name = name;
+    }
+
+    set(key = 'favoriteCities') {
+        localStorage.setItem(key, this.name);
+    }
+
+    get(key = 'favoriteCities') {
+        return JSON.parse(localStorage.getItem(key));
+    }
+}
+
 
 export async function showSavedCitiesOnReload() {
-    const cities = JSON.parse(localStorage.getItem('favoriteCities'));
+    const names = new Storage();
+    const cities = names.get();
 
     async function addCityUI(cities) {
-        if (cities[0]) {
+        if (cities && cities.length) {
             savedCities.add(cities[0]);
             renderCityUI(cities[0]);
             await cities.shift();

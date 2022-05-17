@@ -5,7 +5,7 @@ import {
     changeParamsTabForecast,
     changeListCitiesByClickingHeartUI,
 } from "./view.js";
-import {showSavedCitiesOnReload} from "./storage.js";
+import {showSavedCitiesOnReload, Storage} from "./storage.js";
 import {replaceHeart} from "./utilities.js";
 import {addHours} from 'date-fns';
 import Cookies from 'js-cookie';
@@ -24,7 +24,7 @@ UI_ELEMENTS.INPUT.addEventListener('keydown', async function (e) {
 UI_ELEMENTS.HEART.addEventListener('click', getWeather);
 
 export async function getWeather(switchOfCity) {
-    const cityName = switchOfCity ? switchOfCity : UI_ELEMENTS.INPUT.value.trim();
+    const cityName = switchOfCity ?? UI_ELEMENTS.INPUT.value.trim();
     const url = `${SERVER_URL}?q=${cityName}&appid=${API_KEY}`;
 
     try {
@@ -70,10 +70,14 @@ function changeListCitiesByClickingHeart() {
 
     if (savedCity) {
         savedCities.delete(cityNow);
-        localStorage.setItem('favoriteCities', JSON.stringify([...savedCities]));
+
+        const favoriteCities = new Storage(JSON.stringify([...savedCities]));
+        favoriteCities.set();
     } else {
         savedCities.add(cityNow);
-        localStorage.setItem('favoriteCities', JSON.stringify([...savedCities]));
+
+        const favoriteCities = new Storage(JSON.stringify([...savedCities]));
+        favoriteCities.set();
     }
 
     changeListCitiesByClickingHeartUI(savedCity, cityNow);
@@ -88,7 +92,8 @@ export function deleteCityByButtonClose() {
         savedCities.delete(thisCity);
         this.parentElement.remove();
 
-        localStorage.setItem('favoriteCities', JSON.stringify([...savedCities]));
+        const favoriteCities = new Storage(JSON.stringify([...savedCities]));
+        favoriteCities.set();
         if (UI_ELEMENTS.NOW.CITY.textContent === thisCity) {
             UI_ELEMENTS.NOW.HEART.setAttribute('heart', 'noChecked');
         }

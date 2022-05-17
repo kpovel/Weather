@@ -1,4 +1,4 @@
-import {deleteCityByButtonClose} from './main';
+import {deleteCityByButtonClose} from "./main.js";
 import {tempToCelsius} from "./utilities.js";
 import {format} from "date-fns";
 
