@@ -3,16 +3,25 @@ import {UI_ELEMENTS, deleteCityByHeartCloseUI} from "./view.js";
 import Cookies from 'js-cookie';
 
 export class Storage {
-    constructor(name) {
+    constructor(name, storage) {
         this.name = name;
+        this.storage = storage ?? localStorage;
     }
 
     set(key = 'favoriteCities') {
-        localStorage.setItem(key, this.name);
+        this.storage.setItem(key, this.name);
     }
 
     get(key = 'favoriteCities') {
-        return JSON.parse(localStorage.getItem(key));
+        return JSON.parse(this.storage.getItem(key));
+    }
+
+    clear(key = 'favoriteCities') {
+        return this.storage.removeItem(key);
+    }
+
+    isEmpty(key = 'favoriteCities'){
+        return !JSON.parse(this.storage.getItem(key));
     }
 }
 

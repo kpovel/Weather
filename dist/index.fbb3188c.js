@@ -583,19 +583,12 @@ function changeListCitiesByClickingHeart() {
     const cityNow = _viewJs.UI_ELEMENTS.NOW.CITY.textContent;
     const savedCity = savedCities.has(cityNow);
     const isNotEmptySavedList = _viewJs.UI_ELEMENTS.NOW.HEART.getAttribute('heart') === 'noChecked';
-    if (savedCity) {
-        savedCities.delete(cityNow);
-        const favoriteCities = new _storageJs.Storage(JSON.stringify([
-            ...savedCities
-        ]));
-        favoriteCities.set();
-    } else {
-        savedCities.add(cityNow);
-        const favoriteCities = new _storageJs.Storage(JSON.stringify([
-            ...savedCities
-        ]));
-        favoriteCities.set();
-    }
+    if (savedCity) savedCities.delete(cityNow);
+    else savedCities.add(cityNow);
+    const favoriteCities = new _storageJs.Storage(JSON.stringify([
+        ...savedCities
+    ]));
+    favoriteCities.set();
     _viewJs.changeListCitiesByClickingHeartUI(savedCity, cityNow);
     if (isNotEmptySavedList) chooseSavedCityOnClick();
 }
@@ -10503,14 +10496,21 @@ var _viewJs = require("./view.js");
 var _jsCookie = require("js-cookie");
 var _jsCookieDefault = parcelHelpers.interopDefault(_jsCookie);
 class Storage {
-    constructor(name){
+    constructor(name, storage){
         this.name = name;
+        this.storage = storage ?? localStorage;
     }
     set(key = 'favoriteCities') {
-        localStorage.setItem(key, this.name);
+        this.storage.setItem(key, this.name);
     }
     get(key = 'favoriteCities') {
-        return JSON.parse(localStorage.getItem(key));
+        return JSON.parse(this.storage.getItem(key));
+    }
+    clear(key = 'favoriteCities') {
+        return this.storage.removeItem(key);
+    }
+    isEmpty(key = 'favoriteCities') {
+        return !JSON.parse(this.storage.getItem(key));
     }
 }
 async function showSavedCitiesOnReload() {

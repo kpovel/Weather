@@ -70,15 +70,12 @@ function changeListCitiesByClickingHeart() {
 
     if (savedCity) {
         savedCities.delete(cityNow);
-
-        const favoriteCities = new Storage(JSON.stringify([...savedCities]));
-        favoriteCities.set();
     } else {
         savedCities.add(cityNow);
-
-        const favoriteCities = new Storage(JSON.stringify([...savedCities]));
-        favoriteCities.set();
     }
+
+    const favoriteCities = new Storage(JSON.stringify([...savedCities]));
+    favoriteCities.set();
 
     changeListCitiesByClickingHeartUI(savedCity, cityNow);
     if (isNotEmptySavedList) chooseSavedCityOnClick();
