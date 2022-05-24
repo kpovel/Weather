@@ -3,6 +3,13 @@
 /workspace.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+./codeStyles
+./inspectionProfiles
+./55-newWeather.iml
+./modules.xml
+./vcs.xml
 
 ../node_modules
 ../.parcel-cache
+../dist
+../package-lock.json

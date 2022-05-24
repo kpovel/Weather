@@ -5,11 +5,16 @@ import Cookies from 'js-cookie';
 export class Storage {
     constructor(name, storage) {
         this.name = name;
-        this.storage = storage ?? localStorage;
+        this.storage = (storage === localStorage) ? localStorage : sessionStorage;
     }
 
     set(key = 'favoriteCities') {
-        this.storage.setItem(key, this.name);
+        try {
+            this.storage.setItem(key, JSON.stringify([...this.name]));
+        }
+        catch (err) {
+            console.log(err);
+        }
     }
 
     get(key = 'favoriteCities') {
@@ -17,24 +22,24 @@ export class Storage {
     }
 
     clear(key = 'favoriteCities') {
-        return this.storage.removeItem(key);
+        this.storage.removeItem(key);
     }
 
-    isEmpty(key = 'favoriteCities'){
-        return !JSON.parse(this.storage.getItem(key));
+    isEmpty(key = 'favoriteCities') {
+        return !this.get(key);
     }
 }
 
 
 export async function showSavedCitiesOnReload() {
-    const names = new Storage();
+    const names = new Storage(null, localStorage);
     const cities = names.get();
 
     async function addCityUI(cities) {
         if (cities && cities.length) {
             savedCities.add(cities[0]);
             renderCityUI(cities[0]);
-            await cities.shift();
+            cities.shift();
 
             return await addCityUI(cities);
         }
@@ -44,7 +49,7 @@ export async function showSavedCitiesOnReload() {
 
     switchBetweenRenderedCities();
     await showLastSelectedCity();
-    deleteCityByHEARTClose();
+    deleteCityByHeartClose();
 }
 
 function renderCityUI(city) {
@@ -71,7 +76,7 @@ async function showLastSelectedCity() {
     }
 }
 
-function deleteCityByHEARTClose() {
+function deleteCityByHeartClose() {
     const cityNames = document.querySelectorAll('.city-list__item');
 
     cityNames.forEach(cityName => {

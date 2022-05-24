@@ -74,7 +74,7 @@ function changeListCitiesByClickingHeart() {
         savedCities.add(cityNow);
     }
 
-    const favoriteCities = new Storage(JSON.stringify([...savedCities]));
+    const favoriteCities = new Storage(savedCities, localStorage);
     favoriteCities.set();
 
     changeListCitiesByClickingHeartUI(savedCity, cityNow);
@@ -89,7 +89,7 @@ export function deleteCityByButtonClose() {
         savedCities.delete(thisCity);
         this.parentElement.remove();
 
-        const favoriteCities = new Storage(JSON.stringify([...savedCities]));
+        const favoriteCities = new Storage(savedCities, localStorage);
         favoriteCities.set();
         if (UI_ELEMENTS.NOW.CITY.textContent === thisCity) {
             UI_ELEMENTS.NOW.HEART.setAttribute('heart', 'noChecked');
